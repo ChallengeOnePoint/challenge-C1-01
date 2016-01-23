@@ -1,6 +1,9 @@
 'use strict';
 
 var express = require( 'express' );
+var mongoose = require( 'mongoose' );
+var DbUrl = 'mongodb://localhost:27017/test';
+
 
 module.exports = class Server {
 
@@ -10,6 +13,7 @@ module.exports = class Server {
         this.setRoute();
         this.app.listen( opt.port );
         console.log( 'Server started on http://localhost:' + opt.port );
+        this.setMongo();
     }
 
     setApp() {
@@ -28,6 +32,11 @@ module.exports = class Server {
         } ).get( '/*', function( req, res ) {
             res.sendFile( __dirname + '/www/index.html' );
         } );
+    }
+
+    setMongo() {
+        mongoose.connect(DbUrl)
+        console.log("Connected correctly to MongoDb server.");
     }
 
 };
