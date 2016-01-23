@@ -25,18 +25,22 @@ module.exports = class Server {
     }
 
     setRoute() {
-        this.app.get( '/api/example', function( req, res ) {
-            res.end( JSON.stringify( {
-                example: "Hello from API!!"
-            } ) );
+        this.app.post( '/api/import', function( req, res ) {
+            var jsonString = ''
+            req.on( 'data', function( data ) {
+                jsonString += data;
+            } );
+            req.on( 'end', function() {
+                console.log( JSON.parse( jsonString ) );
+            } );
         } ).get( '/*', function( req, res ) {
             res.sendFile( __dirname + '/www/index.html' );
         } );
     }
 
     setMongo() {
-        mongoose.connect(DbUrl)
-        console.log("Connected correctly to MongoDb server.");
+        mongoose.connect( DbUrl )
+        console.log( "Connected correctly to MongoDb server." );
     }
 
 };
