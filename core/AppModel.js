@@ -16,7 +16,16 @@ app.factory( 'AppModel', function() {
             postcode: "75010",
             firstname: "Abbey",
             lastname: "Desan"
-        } ]
+        } ],
+
+        current: {
+            number: "",
+            street: "",
+            city: "",
+            postcode: "",
+            firstname: "",
+            lastname: ""
+        }
 
 
     };

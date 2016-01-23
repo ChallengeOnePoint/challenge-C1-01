@@ -42,22 +42,28 @@ module.exports = class Server {
                 jsonString += data;
             } );
             req.on( 'end', function() {
-                var adresses = JSON.parse( jsonString ),
-                    adress = adresses[ 0 ].number + ' ' + adresses[ 0 ].street + ' ' + adresses[ 0 ].city;
+                var adresses = JSON.parse( jsonString );
 
-                geocoder.geocode( adress ).then( function( res ) {
-                    adresses[ 0 ].loc = {
-                        type: "Point",
-                        coordinates: [
-                            res[ 0 ].latitude,
-                            res[ 0 ].longitude
-                        ]
-                    };
-                    console.log( adresses[ 0 ] );
-                    Adress.create( adresses[ 0 ] );
-                } ).catch( function( err ) {
-                    console.log( err );
-                } );
+                function insert( adresses ) {
+                    var adress = adresses.shift();
+                    var search = adress.number + ' ' + adress.street + ' ' + adress.city;
+
+                    geocoder.geocode( search ).then( function( res ) {
+                        adress.loc = {
+                            type: "Point",
+                            coordinates: [
+                                res[ 0 ].latitude,
+                                res[ 0 ].longitude
+                            ]
+                        };
+                        new Adress( adress ).save();
+                        if ( adresses.length ) setTimeout( insert( adresses ), 1000 );
+                    } ).catch( function( err ) {
+                        console.log( err );
+                    } );
+                }
+
+                insert( adresses );
             } );
         } ).get( '/*', function( req, res ) {
             res.sendFile( __dirname + '/www/index.html' );

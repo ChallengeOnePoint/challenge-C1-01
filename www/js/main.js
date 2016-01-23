@@ -33,8 +33,49 @@ app.factory( 'AppModel', function() {
             postcode: "75010",
             firstname: "Abbey",
             lastname: "Desan"
-        } ]
+        } ],
 
+        current: {
+            number: "",
+            street: "",
+            city: "",
+            postcode: "",
+            firstname: "",
+            lastname: ""
+        }
+
+
+    };
+
+} );
+
+app.controller( 'createEditCtrl', function( $scope, AppModel, CreateEditService ) {
+
+    $scope.model = AppModel;
+
+} );
+
+app.directive( 'createEdit', function() {
+
+    return {
+        restrict: 'E',
+        replace: true,
+        templateUrl: 'templates/createAndEdit/template.html'
+    };
+
+} );
+
+app.factory( 'CreateEditService', function( $http, AppModel ) {
+
+    return {
+
+        save: function( adress ) {
+            $http.get( '/api/example' ).then( function( resp ) {
+                AppModel.example = resp.data.example
+            }, function( err ) {
+                console.log( err );
+            } );
+        }
 
     };
 

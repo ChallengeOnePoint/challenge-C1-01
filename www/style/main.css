@@ -138,6 +138,13 @@ button.blue {
 #list li {
   margin: 20px;
 }
+#create-edit {
+  position: absolute;
+  top: 70px;
+  left: 20px;
+  right: 400px;
+  bottom: 0;
+}
 #topbar {
   position: absolute;
   top: 0;
