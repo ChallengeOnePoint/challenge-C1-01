@@ -6,7 +6,7 @@ var adressSchema = mongoose.Schema( {
     city: String,
     postcode: Number,
     firstname: String,
-    lastname: String
+    lastname: String,
     loc: {
         type: {
             type: String

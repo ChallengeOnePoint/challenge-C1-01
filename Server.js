@@ -3,6 +3,17 @@
 var express = require( 'express' );
 var mongoose = require( 'mongoose' );
 var DbUrl = 'mongodb://localhost:27017/test';
+var Adress = require( './app/models/adress' );
+
+var geocoderProvider = 'google';
+var httpAdapter = 'https';
+
+var extra = {
+    apiKey: 'AIzaSyAlvp2uz8PA8uE9yO2qX9ckKr51F46d9ec',
+    formatter: null
+};
+
+var geocoder = require( 'node-geocoder' )( geocoderProvider, httpAdapter, extra );
 
 
 module.exports = class Server {
@@ -31,7 +42,22 @@ module.exports = class Server {
                 jsonString += data;
             } );
             req.on( 'end', function() {
-                console.log( JSON.parse( jsonString ) );
+                var adresses = JSON.parse( jsonString ),
+                    adress = adresses[ 0 ].number + ' ' + adresses[ 0 ].street + ' ' + adresses[ 0 ].city;
+
+                geocoder.geocode( adress ).then( function( res ) {
+                    adresses[ 0 ].loc = {
+                        type: "Point",
+                        coordinates: [
+                            res[ 0 ].latitude,
+                            res[ 0 ].longitude
+                        ]
+                    };
+                    console.log( adresses[ 0 ] );
+                    Adress.create( adresses[ 0 ] );
+                } ).catch( function( err ) {
+                    console.log( err );
+                } );
             } );
         } ).get( '/*', function( req, res ) {
             res.sendFile( __dirname + '/www/index.html' );
